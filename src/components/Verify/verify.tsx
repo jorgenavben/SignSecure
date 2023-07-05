@@ -1,23 +1,13 @@
 import { Paper, Typography, Grid, TextField, Button } from "@mui/material";
 import React, { useState } from "react";
 import verifySignature from "../../hooks/useVerifySignature";
+import FileUploader from "../FileUploader/fileUploader";
 
 function Verify() {
   const [message, setMessage] = useState("");
   const [signature, setSignature] = useState("");
   const [key, setKey] = useState("");
-
-  function handleSignature(signature: string) {
-    setSignature(signature);
-  }
-
-  function handleKey(key: string) {
-    setKey(key);
-  }
-
-  function handleMessage(message: string) {
-    setMessage(message);
-  }
+  const [hash, setHash] = useState("");
 
   const onVerifyClick = (signature: string, key: string, message?: string) => {
     try {
@@ -27,6 +17,10 @@ function Verify() {
       console.log(e);
       alert("Verification error");
     }
+  };
+
+  const handleHash = (hash: string) => {
+    setHash(hash);
   };
 
   return (
@@ -46,6 +40,8 @@ function Verify() {
         container
         sx={{ display: "flex", justifyContent: "flex-end" }}
       >
+        <FileUploader onValueChange={handleHash} />
+
         <TextField
           fullWidth
           required
@@ -54,7 +50,7 @@ function Verify() {
           label="Signature"
           variant="outlined"
           sx={{ my: 1 }}
-          onChange={(e) => handleSignature(e.target.value)}
+          onChange={(e) => setSignature(e.target.value)}
         />
         <TextField
           fullWidth
@@ -64,21 +60,12 @@ function Verify() {
           label="Key"
           variant="outlined"
           sx={{ my: 1 }}
-          onChange={(e) => handleKey(e.target.value)}
-        />
-        <TextField
-          fullWidth
-          multiline
-          id="message"
-          label="Message"
-          variant="outlined"
-          sx={{ my: 1 }}
-          onChange={(e) => handleMessage(e.target.value)}
+          onChange={(e) => setKey(e.target.value)}
         />
         <Button
           variant="contained"
           sx={{ mt: 3, ml: 1 }}
-          onClick={() => onVerifyClick(signature, key, message)}
+          onClick={() => onVerifyClick(signature, key, hash)}
         >
           Verify
         </Button>

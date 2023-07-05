@@ -6,31 +6,20 @@ import {
   Button,
 } from "@mui/material";
 import React, { useState } from "react";
+import FileUploader from "../FileUploader/fileUploader";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 
 function Sign() {
-  const [message, setMessage] = useState("");
-  const [file, setFile] = useState<File>();
+  const [hash, setHash] = useState("");
   const [signature, setSignature] = useState("");
+  const [key, setKey] = useState("");
 
   const { signMessage, isConnected } = useCardano();
-
-  function handleMessage(message: string) {
-    setMessage(message);
-  }
-
-  function handleFile(file: File) {
-    setFile(file);
-  }
-
-  function handleSignature(signature: string) {
-    setSignature(signature);
-  }
 
   const onSignClick = async (message: string) => {
     if (isConnected) {
       if (message !== "") {
-        await signMessage(message, handleSignMessage);
+        await signMessage(message, handleSign);
       } else {
         alert("The message cannot be empty");
       }
@@ -39,9 +28,15 @@ function Sign() {
     }
   };
 
-  const handleSignMessage = (signature: string, key?: string) => {
-    handleSignature(signature);
-    console.log(key);
+  const handleSign = (signature: string, key?: string) => {
+    setSignature(signature);
+    if(key) {
+      setKey(key);
+    }
+  };
+
+  const handleHash = (hash: string) => {
+    setHash(hash);
   };
 
   return (
@@ -58,35 +53,22 @@ function Sign() {
         Sign
       </Typography>
       <FormControl fullWidth>
+        <FileUploader onValueChange={handleHash} />
+
         <TextField
           fullWidth
-          required
+          id="hash"
+          label="Hash"
           multiline
-          id="message"
-          label="Message"
           variant="outlined"
           sx={{ my: 1 }}
-          onChange={(e) => handleMessage(e.target.value)}
+          value={hash}
         />
 
         <Button
           variant="contained"
           sx={{ mt: 3, ml: 1 }}
-        >
-          Upload
-          <input
-            onChange={(e) => {
-              if (e.target.files != null) {
-                handleFile(e.target.files[0]);
-              }
-            }}
-            type="file"
-          />
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ mt: 3, ml: 1 }}
-          onClick={() => onSignClick(message)}
+          onClick={() => onSignClick(hash)}
         >
           Sign
         </Button>
@@ -94,12 +76,22 @@ function Sign() {
 
       <TextField
         fullWidth
-        id="signatureResult"
+        id="signature"
         label="Signature"
         multiline
         variant="outlined"
         sx={{ my: 1 }}
         value={signature}
+      />
+
+<TextField
+        fullWidth
+        id="key"
+        label="Key"
+        multiline
+        variant="outlined"
+        sx={{ my: 1 }}
+        value={key}
       />
     </Paper>
   );
