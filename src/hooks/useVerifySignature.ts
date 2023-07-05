@@ -15,7 +15,6 @@ const verifySignature = (
 
   if (message) {
     const decoded = Decoder.decode(Buffer.from(signature, "hex"));
-    console.log(decoded);
     const payload: Buffer = decoded.value[2];
     if (payload.toString("utf8") !== message) {
       return false;
