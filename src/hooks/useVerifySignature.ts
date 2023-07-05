@@ -2,6 +2,7 @@ import { Bip32PublicKey } from "@stricahq/bip32ed25519";
 import { getPublicKeyFromCoseKey, CoseSign1 } from "@stricahq/cip08";
 import { Decoder } from "@stricahq/cbors";
 import { RewardAddress } from "@stricahq/typhonjs/dist/address";
+import { Buffer } from "buffer";
 
 const verifySignature = (
   signature: string,
@@ -14,6 +15,7 @@ const verifySignature = (
 
   if (message) {
     const decoded = Decoder.decode(Buffer.from(signature, "hex"));
+    console.log(decoded);
     const payload: Buffer = decoded.value[2];
     if (payload.toString("utf8") !== message) {
       return false;

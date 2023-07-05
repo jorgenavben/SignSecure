@@ -48,7 +48,13 @@ function App() {
   };
 
   const onVerifyClick = (signature: string, key: string, messageVerify?: string) => {
-    console.log("Verified:", verifySignature(signature, key, messageVerify));
+    try {
+      console.log("Verified:", verifySignature(signature, key, messageVerify));
+    } catch (e) {
+      console.log(e);
+      alert("Verification error");
+    }
+    
   };
 
   const defaultTheme = createTheme();
@@ -78,7 +84,7 @@ function App() {
       <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <ConnectWalletButton limitNetwork={NetworkType.TESTNET} />
+          <ConnectWalletButton limitNetwork={NetworkType.MAINNET} />
         </Toolbar>
       </AppBar>
       <Container
@@ -104,6 +110,7 @@ function App() {
             <TextField
               fullWidth
               required
+              multiline
               id="message"
               label="Message"
               variant="outlined"
@@ -163,6 +170,7 @@ function App() {
             <TextField
               fullWidth
               required
+              multiline
               id="signatureVerify"
               label="Signature"
               variant="outlined"
@@ -172,6 +180,7 @@ function App() {
             <TextField
               fullWidth
               required
+              multiline
               id="key"
               label="Key"
               variant="outlined"
@@ -180,6 +189,7 @@ function App() {
             />
             <TextField
               fullWidth
+              multiline
               id="messageVerify"
               label="Message"
               variant="outlined"
@@ -189,7 +199,7 @@ function App() {
             <Button
               variant="contained"
               sx={{ mt: 3, ml: 1 }}
-              onClick={() => onVerifyClick(signatureVerify, key)}
+              onClick={() => onVerifyClick(signatureVerify, key, messageVerify)}
             >
               Verify
             </Button>
