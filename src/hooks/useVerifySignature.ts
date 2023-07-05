@@ -2,6 +2,7 @@ import { Bip32PublicKey } from "@stricahq/bip32ed25519";
 import { getPublicKeyFromCoseKey, CoseSign1 } from "@stricahq/cip08";
 import { Decoder } from "@stricahq/cbors";
 import { RewardAddress } from "@stricahq/typhonjs/dist/address";
+import { Buffer } from "buffer";
 
 const verifySignature = (
   signature: string,
