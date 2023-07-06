@@ -1,7 +1,7 @@
 import { Paper, Typography, Grid, TextField, Button } from "@mui/material";
 import React, { useState } from "react";
-import verifySignature from "../../hooks/useVerifySignature";
 import FileUploader from "../FileUploader/fileUploader";
+import verifySignature from "@cardano-foundation/cardano-verify-datasignature";
 
 function Verify() {
   const [message, setMessage] = useState("");

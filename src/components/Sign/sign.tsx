@@ -6,8 +6,8 @@ import {
   Button,
 } from "@mui/material";
 import React, { useState } from "react";
-import FileUploader from "../FileUploader/fileUploader";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
+import FileUploader from "../FileUploader/fileUploader";
 
 function Sign() {
   const [hash, setHash] = useState("");
