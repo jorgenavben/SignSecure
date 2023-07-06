@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 import FileUploader from "../FileUploader/fileUploader";
+import { saveAs } from "file-saver";
 
 function Sign() {
   const [hash, setHash] = useState("");
@@ -30,13 +31,18 @@ function Sign() {
 
   const handleSign = (signature: string, key?: string) => {
     setSignature(signature);
-    if(key) {
+    if (key) {
       setKey(key);
     }
   };
 
-  const handleHash = (hash: string) => {
-    setHash(hash);
+  const handleDownload = () => {
+    if (signature && key) {
+      const data = { signature, key };
+      const jsonData = JSON.stringify(data);
+      const blob = new Blob([jsonData], { type: "application/json" });
+      saveAs(blob, "sigantureKey.json");
+    }
   };
 
   return (
@@ -53,7 +59,7 @@ function Sign() {
         Sign
       </Typography>
       <FormControl fullWidth>
-        <FileUploader onValueChange={handleHash} />
+        <FileUploader onValueChange={setHash} />
 
         <TextField
           fullWidth
@@ -84,7 +90,7 @@ function Sign() {
         value={signature}
       />
 
-<TextField
+      <TextField
         fullWidth
         id="key"
         label="Key"
@@ -93,6 +99,14 @@ function Sign() {
         sx={{ my: 1 }}
         value={key}
       />
+
+      <Button
+        variant="contained"
+        sx={{ mt: 3, ml: 1 }}
+        onClick={() => handleDownload()}
+      >
+        Download
+      </Button>
     </Paper>
   );
 }
