@@ -4,10 +4,11 @@ import {
   FormControl,
   TextField,
   Button,
+  Alert,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
-import FileUploader from "../FileUploader/fileUploader";
+import FileUpload from "../FileUpload/fileUpload";
 import { saveAs } from "file-saver";
 
 function Sign() {
@@ -15,17 +16,20 @@ function Sign() {
   const [signature, setSignature] = useState("");
   const [key, setKey] = useState("");
 
+  const [isSignatureKeyVisible, setIsSignatureKeyVisible] = useState(false);
+  const [
+    isWalletNotConnectedOnSignVisible,
+    setIsWalletNotConnectedOnSignVisible,
+  ] = useState(false);
+
   const { signMessage, isConnected } = useCardano();
 
-  const onSignClick = async (message: string) => {
+  const onSignClick = async () => {
     if (isConnected) {
-      if (message !== "") {
-        await signMessage(message, handleSign);
-      } else {
-        alert("The message cannot be empty");
-      }
+      setIsWalletNotConnectedOnSignVisible(false);
+      await signMessage(hash, handleSign);
     } else {
-      alert("The wallet is not connected");
+      setIsWalletNotConnectedOnSignVisible(true);
     }
   };
 
@@ -34,6 +38,7 @@ function Sign() {
     if (key) {
       setKey(key);
     }
+    setIsSignatureKeyVisible(true);
   };
 
   const handleDownload = () => {
@@ -54,59 +59,65 @@ function Sign() {
         component="h1"
         variant="h4"
         align="center"
-        sx={{ my: { xs: 3, md: 6 } }}
+        sx={{ my: { xs: 3, md: 2 } }}
       >
         Sign
       </Typography>
       <FormControl fullWidth>
-        <FileUploader onValueChange={setHash} />
-
-        <TextField
-          fullWidth
-          id="hash"
-          label="Hash"
-          multiline
-          variant="outlined"
-          sx={{ my: 1 }}
-          value={hash}
+        <FileUpload
+          data={hash}
+          onValueChange={setHash}
         />
 
-        <Button
-          variant="contained"
-          sx={{ mt: 3, ml: 1 }}
-          onClick={() => onSignClick(hash)}
-        >
-          Sign
-        </Button>
+        {hash && (
+          <Button
+            variant="contained"
+            sx={{ mt: 3, ml: 1 }}
+            onClick={onSignClick}
+          >
+            Sign
+          </Button>
+        )}
       </FormControl>
 
-      <TextField
-        fullWidth
-        id="signature"
-        label="Signature"
-        multiline
-        variant="outlined"
-        sx={{ my: 1 }}
-        value={signature}
-      />
+      {isWalletNotConnectedOnSignVisible && (
+        <Alert severity="error">
+          In order to sign a document a wallet must be connected. Please,
+          connect a wallet.
+        </Alert>
+      )}
 
-      <TextField
-        fullWidth
-        id="key"
-        label="Key"
-        multiline
-        variant="outlined"
-        sx={{ my: 1 }}
-        value={key}
-      />
+      {isSignatureKeyVisible && (
+        <>
+          <TextField
+            fullWidth
+            id="signature"
+            label="Signature"
+            multiline
+            variant="outlined"
+            sx={{ my: 1 }}
+            value={signature}
+          />
 
-      <Button
-        variant="contained"
-        sx={{ mt: 3, ml: 1 }}
-        onClick={() => handleDownload()}
-      >
-        Download
-      </Button>
+          <TextField
+            fullWidth
+            id="key"
+            label="Key"
+            multiline
+            variant="outlined"
+            sx={{ my: 1 }}
+            value={key}
+          />
+
+          <Button
+            variant="contained"
+            sx={{ mt: 3, ml: 1 }}
+            onClick={() => handleDownload()}
+          >
+            Download
+          </Button>
+        </>
+      )}
     </Paper>
   );
 }
