@@ -5,7 +5,7 @@ import {
   ConnectWalletButton,
   NetworkType,
 } from "@cardano-foundation/cardano-connect-with-wallet";
-import { AppBar, Container, CssBaseline, Toolbar } from "@mui/material";
+import { AppBar, Container, CssBaseline, Grid, Toolbar } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Sign from "./components/Sign/sign";
 import Verify from "./components/Verify/verify";
@@ -23,10 +23,27 @@ function App() {
       </AppBar>
       <Container
         component="main"
-        maxWidth="sm"
+        maxWidth="lg"
       >
-        <Sign />
-        <Verify />
+        <Grid
+          container
+          spacing={2}
+        >
+          <Grid
+            item
+            xs={12}
+            sm={6}
+          >
+            <Sign />
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+          >
+            <Verify />
+          </Grid>
+        </Grid>
       </Container>
     </ThemeProvider>
   );
