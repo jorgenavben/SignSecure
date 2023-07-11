@@ -4,50 +4,39 @@ import {
   FormControl,
   TextField,
   Button,
-  Alert,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
-import FileUpload from "../FileUpload/fileUpload";
-import { saveAs } from "file-saver";
+import FileUploader from "../FileUploader/fileUploader";
 
 function Sign() {
   const [hash, setHash] = useState("");
   const [signature, setSignature] = useState("");
   const [key, setKey] = useState("");
 
-  const [isSignatureKeyVisible, setIsSignatureKeyVisible] = useState(false);
-  const [
-    isWalletNotConnectedOnSignVisible,
-    setIsWalletNotConnectedOnSignVisible,
-  ] = useState(false);
-
   const { signMessage, isConnected } = useCardano();
 
-  const onSignClick = async () => {
+  const onSignClick = async (message: string) => {
     if (isConnected) {
-      setIsWalletNotConnectedOnSignVisible(false);
-      await signMessage(hash, handleSign);
+      if (message !== "") {
+        await signMessage(message, handleSign);
+      } else {
+        alert("The message cannot be empty");
+      }
     } else {
-      setIsWalletNotConnectedOnSignVisible(true);
+      alert("The wallet is not connected");
     }
   };
 
   const handleSign = (signature: string, key?: string) => {
     setSignature(signature);
-    if (key) {
+    if(key) {
       setKey(key);
     }
-    setIsSignatureKeyVisible(true);
   };
 
-  const handleDownload = () => {
-    if (signature && key) {
-      const data = { signature, key };
-      const jsonData = JSON.stringify(data);
-      const blob = new Blob([jsonData], { type: "application/json" });
-      saveAs(blob, "sigantureKey.json");
-    }
+  const handleHash = (hash: string) => {
+    setHash(hash);
   };
 
   return (
@@ -59,65 +48,51 @@ function Sign() {
         component="h1"
         variant="h4"
         align="center"
-        sx={{ my: { xs: 3, md: 2 } }}
+        sx={{ my: { xs: 3, md: 6 } }}
       >
         Sign
       </Typography>
       <FormControl fullWidth>
-        <FileUpload
-          data={hash}
-          onValueChange={setHash}
+        <FileUploader onValueChange={handleHash} />
+
+        <TextField
+          fullWidth
+          id="hash"
+          label="Hash"
+          multiline
+          variant="outlined"
+          sx={{ my: 1 }}
+          value={hash}
         />
 
-        {hash && (
-          <Button
-            variant="contained"
-            sx={{ mt: 3, ml: 1 }}
-            onClick={onSignClick}
-          >
-            Sign
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          sx={{ mt: 3, ml: 1 }}
+          onClick={() => onSignClick(hash)}
+        >
+          Sign
+        </Button>
       </FormControl>
 
-      {isWalletNotConnectedOnSignVisible && (
-        <Alert severity="error">
-          In order to sign a document a wallet must be connected. Please,
-          connect a wallet.
-        </Alert>
-      )}
+      <TextField
+        fullWidth
+        id="signature"
+        label="Signature"
+        multiline
+        variant="outlined"
+        sx={{ my: 1 }}
+        value={signature}
+      />
 
-      {isSignatureKeyVisible && (
-        <>
-          <TextField
-            fullWidth
-            id="signature"
-            label="Signature"
-            multiline
-            variant="outlined"
-            sx={{ my: 1 }}
-            value={signature}
-          />
-
-          <TextField
-            fullWidth
-            id="key"
-            label="Key"
-            multiline
-            variant="outlined"
-            sx={{ my: 1 }}
-            value={key}
-          />
-
-          <Button
-            variant="contained"
-            sx={{ mt: 3, ml: 1 }}
-            onClick={() => handleDownload()}
-          >
-            Download
-          </Button>
-        </>
-      )}
+<TextField
+        fullWidth
+        id="key"
+        label="Key"
+        multiline
+        variant="outlined"
+        sx={{ my: 1 }}
+        value={key}
+      />
     </Paper>
   );
 }
