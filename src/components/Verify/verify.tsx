@@ -7,8 +7,8 @@ import {
   Alert,
 } from "@mui/material";
 import React, { useState } from "react";
-import FileUpload from "../FileUpload/fileUpload";
 import verifySignature from "@cardano-foundation/cardano-verify-datasignature";
+import FileUpload from "../FileUpload/fileUpload";
 
 function Verify() {
   const [signature, setSignature] = useState("");
@@ -36,10 +36,6 @@ function Verify() {
       setIsSuccessfulVerificationVisible(false);
       setIsUnSuccessfulVerificationVisible(true);
     }
-  };
-
-  const handleHash = (hash: string) => {
-    setHash(hash);
   };
 
   return (

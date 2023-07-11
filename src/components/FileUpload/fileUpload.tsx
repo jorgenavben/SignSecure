@@ -1,6 +1,8 @@
-import { Button, TextField } from "@mui/material";
-import React, { ChangeEvent, useState } from "react";
+import { TextField } from "@mui/material";
+import React, { useState } from "react";
 import { MuiFileInput } from "mui-file-input";
+import { sha256 } from "multiformats/hashes/sha2";
+import { CID } from "multiformats/cid";
 
 interface FileUploaderProps {
   data: string;
@@ -8,6 +10,8 @@ interface FileUploaderProps {
 }
 
 function FileUpload({ data, onValueChange }: FileUploaderProps) {
+  const SHA_256_CODE = 0x12;
+  
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (newFile: File | null) => {
@@ -23,12 +27,9 @@ function FileUpload({ data, onValueChange }: FileUploaderProps) {
       reader.onload = async () => {
         const buffer = reader.result as ArrayBuffer;
         const data = new Uint8Array(buffer);
-        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray
-          .map((byte) => byte.toString(16).padStart(2, "0"))
-          .join("");
-        onValueChange(hashHex);
+        const hash = await sha256.digest(data);
+        const cid = CID.create(1, SHA_256_CODE, hash);
+        onValueChange(cid.toString());
       };
       reader.readAsArrayBuffer(newFile);
     }
@@ -47,7 +48,7 @@ function FileUpload({ data, onValueChange }: FileUploaderProps) {
         <TextField
           fullWidth
           id="hash"
-          label="Hash"
+          label="Hash sha2-256"
           multiline
           variant="outlined"
           sx={{ my: 1 }}
