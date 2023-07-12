@@ -11,19 +11,30 @@ import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 import FileUpload from "../FileUpload/fileUpload";
 import { saveAs } from "file-saver";
 
+/**
+ * Sign component for signing a document with a connected wallet.
+ */
 function Sign() {
+  // State variables
   const [hash, setHash] = useState("");
   const [signature, setSignature] = useState("");
   const [key, setKey] = useState("");
 
+  // Visibility state variables
   const [isSignatureKeyVisible, setIsSignatureKeyVisible] = useState(false);
   const [
     isWalletNotConnectedOnSignVisible,
     setIsWalletNotConnectedOnSignVisible,
   ] = useState(false);
 
+  // Cardano wallet connection hook
   const { signMessage, isConnected } = useCardano();
 
+  /**
+   * Handles the sign button click event.
+   * Signs the message with the connected wallet if available.
+   * Shows an error message if no wallet is connected.
+   */
   const onSignClick = async () => {
     if (isConnected) {
       setIsWalletNotConnectedOnSignVisible(false);
@@ -33,6 +44,13 @@ function Sign() {
     }
   };
 
+  /**
+   * Handles the sign message callback.
+   * Updates the signature and key state variables.
+   * Sets the visibility of the signature and key fields.
+   * @param {string} signature - The generated signature.
+   * @param {string} key - The generated key (optional).
+   */
   const handleSign = (signature: string, key?: string) => {
     setSignature(signature);
     if (key) {
@@ -41,6 +59,10 @@ function Sign() {
     setIsSignatureKeyVisible(true);
   };
 
+  /**
+   * Handles the download button click event.
+   * Downloads the signature and key as a JSON file.
+   */
   const handleDownload = () => {
     if (signature && key) {
       const data = { signature, key };
@@ -64,10 +86,7 @@ function Sign() {
         Sign
       </Typography>
       <FormControl fullWidth>
-        <FileUpload
-          data={hash}
-          onValueChange={setHash}
-        />
+        <FileUpload data={hash} onValueChange={setHash} />
 
         {hash && (
           <Button
