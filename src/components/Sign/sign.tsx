@@ -9,14 +9,31 @@ import React, { useState } from "react";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 import FileUploader from "../FileUploader/fileUploader";
 
+/**
+ * Sign component for signing a document with a connected wallet.
+ */
 function Sign() {
+  // State variables
   const [hash, setHash] = useState("");
   const [signature, setSignature] = useState("");
   const [key, setKey] = useState("");
 
+  // Visibility state variables
+  const [isSignatureKeyVisible, setIsSignatureKeyVisible] = useState(false);
+  const [
+    isWalletNotConnectedOnSignVisible,
+    setIsWalletNotConnectedOnSignVisible,
+  ] = useState(false);
+
+  // Cardano wallet connection hook
   const { signMessage, isConnected } = useCardano();
 
-  const onSignClick = async (message: string) => {
+  /**
+   * Handles the sign button click event.
+   * Signs the message with the connected wallet if available.
+   * Shows an error message if no wallet is connected.
+   */
+  const onSignClick = async () => {
     if (isConnected) {
       if (message !== "") {
         await signMessage(message, handleSign);
@@ -28,6 +45,13 @@ function Sign() {
     }
   };
 
+  /**
+   * Handles the sign message callback.
+   * Updates the signature and key state variables.
+   * Sets the visibility of the signature and key fields.
+   * @param {string} signature - The generated signature.
+   * @param {string} key - The generated key (optional).
+   */
   const handleSign = (signature: string, key?: string) => {
     setSignature(signature);
     if(key) {
@@ -35,8 +59,17 @@ function Sign() {
     }
   };
 
-  const handleHash = (hash: string) => {
-    setHash(hash);
+  /**
+   * Handles the download button click event.
+   * Downloads the signature and key as a JSON file.
+   */
+  const handleDownload = () => {
+    if (signature && key) {
+      const data = { signature, key };
+      const jsonData = JSON.stringify(data);
+      const blob = new Blob([jsonData], { type: "application/json" });
+      saveAs(blob, "sigantureKey.json");
+    }
   };
 
   return (
@@ -53,17 +86,7 @@ function Sign() {
         Sign
       </Typography>
       <FormControl fullWidth>
-        <FileUploader onValueChange={handleHash} />
-
-        <TextField
-          fullWidth
-          id="hash"
-          label="Hash"
-          multiline
-          variant="outlined"
-          sx={{ my: 1 }}
-          value={hash}
-        />
+        <FileUpload data={hash} onValueChange={setHash} />
 
         <Button
           variant="contained"
