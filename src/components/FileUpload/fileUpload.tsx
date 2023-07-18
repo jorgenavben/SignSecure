@@ -33,7 +33,7 @@ function FileUpload({ data, onValueChange }: FileUploaderProps) {
   };
 
   /**
-   * Calculates the SHA-256 hash of the selected file.
+   * Calculates the SHA2-256 hash of the selected file.
    * @param {File | null} newFile - The file to calculate the hash for.
    */
   const calculateHash = async (newFile: File | null) => {
