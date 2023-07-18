@@ -5,7 +5,7 @@ import {
   ConnectWalletButton,
   NetworkType,
 } from "@cardano-foundation/cardano-connect-with-wallet";
-import { AppBar, Container, CssBaseline, Toolbar } from "@mui/material";
+import { AppBar, Container, CssBaseline, Grid, Toolbar } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Sign from "./components/Sign/sign";
 import Verify from "./components/Verify/verify";

@@ -37,7 +37,7 @@ To run SignSecure locally, you have two options: using the Dockerfile or running
 1. Clone the repository:
 
    ```bash
-   docker build -t SignSecure .
+   git clone https://github.com/jorgenavben/SignSecure.git
 
 2. Navigate to the project directory:
 
@@ -47,12 +47,12 @@ To run SignSecure locally, you have two options: using the Dockerfile or running
 3. Build the Docker image:
 
    ```bash
-   docker build -t SignSecure .
+   docker build -t signsecure .
 
 4. Run the Docker container:
 
    ```bash
-   docker run -p 3000:3000 SignSecure
+   docker run -p 3000:3000 signsecure
 
 5. Open your browser and visit http://localhost:3000 to see the application in action.
 
@@ -62,7 +62,7 @@ To run SignSecure locally, you have two options: using the Dockerfile or running
 1. Clone the repository:
 
    ```bash
-    git clone https://github.com/your-username/SignSecure.git
+    git clone https://github.com/jorgenavben/SignSecure.git
 
 2. Navigate to the project directory:
 
